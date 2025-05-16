@@ -8,17 +8,29 @@ interface StatsData {
   network: { download: string; upload: string; active: string };
 }
 
-const MOCK_STATS: StatsData = {
-  cpu: { usage: "24%", temperature: "47°C", cores: "4" },
-  memory: { used: "2.1 GB", total: "8 GB", usage: "26%" },
-  swap: { used: "512 MB", total: "2 GB", usage: "25%" },
-  disk: { used: "120 GB", total: "256 GB", usage: "47%" },
-  network: { download: "12.3 Mbps", upload: "2.1 Mbps", active: "eth0" }
-};
-
 export const StatsSection: React.FC = () => {
-  // Replace this with real fetch logic when API endpoints are ready
-  const [stats] = useState(MOCK_STATS);
+  const [stats, setStats] = useState<StatsData | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetch("/api/system/stats")
+      .then((res) => {
+        if (!res.ok) throw new Error("Failed to fetch stats");
+        return res.json();
+      })
+      .then((data) => {
+        setStats(data);
+        setLoading(false);
+      })
+      .catch((e) => {
+        setError(e.toString());
+        setLoading(false);
+      });
+  }, []);
+
+  if (loading) return <section className="stats"><div>Loading...</div></section>;
+  if (error || !stats) return <section className="stats"><div style={{ color: 'red' }}>Error loading stats.</div></section>;
 
   return (
     <section className="stats">

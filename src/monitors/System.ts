@@ -9,31 +9,27 @@ export abstract class SystemInfoCollector {
       architecture: this.getArchitecture(),
       platform: this.getPlatform(),
       osName: this.getOSName(),
-      osVersion: this.getOSVersion()
     };
   }
 
-  static getCurrentSystemCollector(): SystemInfoCollector | null {
+  static async getSystemStats(): Promise<Record<string, any>> {
     try {
+      // Dynamically import correct collector and delegate
+      let collector: SystemInfoCollector | null = null;
       if (process.platform === "linux") {
-        const { LinuxInfoCollector } = require("./Linux");
-        return new LinuxInfoCollector();
+        const { LinuxInfoCollector } = await import("./Linux");
+        collector = new LinuxInfoCollector();
       } else if (process.platform === "win32") {
-        const { WindowsInfoCollector } = require("./Windows");
-        return new WindowsInfoCollector();
+        const { WindowsInfoCollector } = await import("./Windows");
+        collector = new WindowsInfoCollector();
       }
+      if (collector && typeof (collector as any).getSystemStats === "function") {
+        return await (collector as any).getSystemStats();
+      }
+      return { error: "Unsupported platform or missing collector implementation." };
     } catch (err) {
-      // ignore
+      console.error('Error in getSystemStats:', err);
+      return { error: "Failed to collect system stats." };
     }
-    return null;
-  }
-
-  private static _cachedSystemInfo: Record<string, any> | null = null;
-
-  static getSystemInfo(): Record<string, any> {
-    if (this._cachedSystemInfo) return this._cachedSystemInfo;
-    const collector = this.getCurrentSystemCollector();
-    this._cachedSystemInfo = collector ? collector.getAllInfo() : { error: "Unsupported platform", platform: process.platform };
-    return this._cachedSystemInfo;
   }
 }

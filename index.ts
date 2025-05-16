@@ -19,9 +19,23 @@ const server = Bun.serve({
       }
     },
     "/api/system": {
+      async GET(req) {
+        let collector: any = null;
+        if (process.platform === "linux") {
+          const { LinuxInfoCollector } = await import("./src/monitors/Linux");
+          collector = new LinuxInfoCollector();
+        } else if (process.platform === "win32") {
+          const { WindowsInfoCollector } = await import("./src/monitors/Windows");
+          collector = new WindowsInfoCollector();
+        }
+        return Response.json(collector ? collector.getAllInfo() : { error: "Unsupported platform", platform: process.platform });
+      }
+    },
+    "/api/system/stats": {
       async GET() {
         const { SystemInfoCollector } = await import("./src/monitors/System");
-        return Response.json(SystemInfoCollector.getSystemInfo());
+        const stats = await SystemInfoCollector.getSystemStats();
+        return Response.json(stats);
       }
     }
   }
