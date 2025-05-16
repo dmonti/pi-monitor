@@ -28,7 +28,7 @@ const server = Bun.serve({
     "/api/system/stats": {
       async GET() {
         const { SystemInfoCollector } = await import("./src/system/System");
-        const stats = await SystemInfoCollector.getSystemStats();
+        const stats = await SystemInfoCollector.getStats();
         return Response.json(stats);
       }
     }

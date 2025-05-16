@@ -1,7 +1,7 @@
 import { SystemInfoCollector } from "./System";
 
 export class LinuxInfoCollector extends SystemInfoCollector {
-  async getSystemStats(): Promise<Record<string, any>> {
+  async getStats(): Promise<Record<string, any>> {
     // CPU usage: top -bn1 | grep 'Cpu(s)'
     const cpuOut = Bun.spawnSync(["sh", "-c", "top -bn1 | grep 'Cpu(s)' | awk '{print $2 + $4}'"]).stdout.toString().trim();
     const cpuUsage = cpuOut ? `${parseFloat(cpuOut).toFixed(1)}%` : "N/A";

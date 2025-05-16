@@ -1,7 +1,7 @@
 import { SystemInfoCollector } from "./System";
 
 export class WindowsInfoCollector extends SystemInfoCollector {
-  async getSystemStats(): Promise<Record<string, any>> {
+  async getStats(): Promise<Record<string, any>> {
     // CPU usage: typeperf "\Processor(_Total)\% Processor Time" -sc 1
     let cpuUsage = "N/A";
     try {
