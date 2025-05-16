@@ -4,7 +4,7 @@ export abstract class SystemInfoCollector {
   abstract getOSName(): string;
   abstract getOSVersion(): string;
 
-  getAllInfo() {
+  getInfo() {
     return {
       architecture: this.getArchitecture(),
       platform: this.getPlatform(),
@@ -112,8 +112,8 @@ export abstract class SystemInfoCollector {
         let info: Record<string, any>;
         if (collector && typeof (collector as any).getInfo === "function") {
           info = await (collector as any).getInfo();
-        } else if (collector && typeof collector.getAllInfo === "function") {
-          info = collector.getAllInfo();
+        } else if (collector && typeof collector.getInfo === "function") {
+          info = collector.getInfo();
         } else {
           info = { error: "Unsupported platform or missing collector implementation." };
         }
@@ -134,17 +134,3 @@ export abstract class SystemInfoCollector {
     this._cachedInfo = null;
   }
 }
-
-// Bootstrap: Warm up system info and stats caches at startup
-(async () => {
-  try {
-    await Promise.all([
-      SystemInfoCollector.getInfo(),
-      SystemInfoCollector.getStats()
-    ]);
-    // Optionally log success
-    // console.log('System info and stats caches loaded at startup');
-  } catch (err) {
-    console.error('Error preloading system info/stats:', err);
-  }
-})();

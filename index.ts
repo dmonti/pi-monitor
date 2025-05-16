@@ -4,6 +4,20 @@ import pkg from './package.json' assert { type: 'json' }
 console.log(`Starting ${pkg.name} v${pkg.version} using Bun v${Bun.version} with PID ${process.pid}`)
 
 import homepage from "./public/index.html";
+import { SystemInfoCollector } from "./src/system/System";
+
+// Bootstrap: Warm up system info and stats caches at startup
+(async () => {
+  try {
+    await Promise.all([
+      SystemInfoCollector.getInfo(),
+      SystemInfoCollector.getStats()
+    ]);
+    console.log(`System info and stats caches loaded in ${Date.now() - t0}ms`);
+  } catch (err) {
+    console.error('Error preloading system info/stats:', err);
+  }
+})();
 
 const server = Bun.serve({
   port: process.env.SERVER_PORT || 3000,
