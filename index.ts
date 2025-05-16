@@ -22,10 +22,10 @@ const server = Bun.serve({
       async GET(req) {
         let collector: any = null;
         if (process.platform === "linux") {
-          const { LinuxInfoCollector } = await import("./src/monitors/Linux");
+          const { LinuxInfoCollector } = await import("./src/system/Linux");
           collector = new LinuxInfoCollector();
         } else if (process.platform === "win32") {
-          const { WindowsInfoCollector } = await import("./src/monitors/Windows");
+          const { WindowsInfoCollector } = await import("./src/system/Windows");
           collector = new WindowsInfoCollector();
         }
         return Response.json(collector ? collector.getAllInfo() : { error: "Unsupported platform", platform: process.platform });
@@ -33,7 +33,7 @@ const server = Bun.serve({
     },
     "/api/system/stats": {
       async GET() {
-        const { SystemInfoCollector } = await import("./src/monitors/System");
+        const { SystemInfoCollector } = await import("./src/system/System");
         const stats = await SystemInfoCollector.getSystemStats();
         return Response.json(stats);
       }
