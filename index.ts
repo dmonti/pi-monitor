@@ -18,17 +18,11 @@ const server = Bun.serve({
         return Response.json({name: pkg.name, version: pkg.version});
       }
     },
-    "/api/system": {
+    "/api/system/info": {
       async GET(req) {
-        let collector: any = null;
-        if (process.platform === "linux") {
-          const { LinuxInfoCollector } = await import("./src/system/Linux");
-          collector = new LinuxInfoCollector();
-        } else if (process.platform === "win32") {
-          const { WindowsInfoCollector } = await import("./src/system/Windows");
-          collector = new WindowsInfoCollector();
-        }
-        return Response.json(collector ? collector.getAllInfo() : { error: "Unsupported platform", platform: process.platform });
+        const { SystemInfoCollector } = await import("./src/system/System");
+        const info = await SystemInfoCollector.getInfo();
+        return Response.json(info);
       }
     },
     "/api/system/stats": {

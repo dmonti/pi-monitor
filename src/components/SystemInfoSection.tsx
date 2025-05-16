@@ -13,7 +13,7 @@ export const SystemInfoSection: React.FC = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("/api/system")
+    fetch("/api/system/info")
       .then((res) => res.json())
       .then((data) => {
         setSystemInfo(data);
