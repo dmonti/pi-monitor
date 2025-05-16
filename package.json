@@ -8,7 +8,7 @@
     "build": "rm -rf build && bun build ./src/index.tsx --outdir ./build && cp public/index.html build/index.html"
   },
   "devDependencies": {
-    "@types/bun": "^1.2.13",
+    "@types/bun": "^1.2",
     "@types/react": "^19.1",
     "@types/react-dom": "^19.1"
   },

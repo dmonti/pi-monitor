@@ -10,8 +10,14 @@ const server = Bun.serve({
   routes: {
     "/": homepage,
     "/api/info": {
-      async GET(req) {
+      async GET() {
         return Response.json({name: pkg.name, version: pkg.version});
+      }
+    },
+    "/api/system": {
+      async GET() {
+        const { SystemInfoCollector } = await import("./src/monitors/System");
+        return Response.json(SystemInfoCollector.getSystemInfo());
       }
     }
   }
