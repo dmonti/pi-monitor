@@ -7,6 +7,10 @@ import homepage from "./public/index.html";
 
 const server = Bun.serve({
   port: process.env.SERVER_PORT || 3000,
+  idleTimeout: 60,
+  development: {
+    hmr: true
+  },
   routes: {
     "/": homepage,
     "/api/info": {
