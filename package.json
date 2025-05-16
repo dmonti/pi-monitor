@@ -4,12 +4,19 @@
   "module": "index.ts",
   "type": "module",
   "scripts": {
-    "start": "bun run index.ts"
+    "dev": "bun run index.ts --watch",
+    "build": "rm -rf build && bun build ./src/index.tsx --outdir ./build && cp public/index.html build/index.html"
   },
   "devDependencies": {
-    "@types/bun": "^1.2.13"
+    "@types/bun": "^1.2.13",
+    "@types/react": "^19.1",
+    "@types/react-dom": "^19.1"
   },
   "peerDependencies": {
     "typescript": "^5"
+  },
+  "dependencies": {
+    "react": "^19.1",
+    "react-dom": "^19.1"
   }
 }
